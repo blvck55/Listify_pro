@@ -103,8 +103,7 @@ PAGES (9 total)
 
 SEEDER & DEMO DATA
 - DemoSeeder using all 5 factories
-- Admin account: admin@listify.com / password
-- Test account:  test@listify.com  / password
+- Admin account: admin@listify.local / admin1234
 - 3 categories, 5 seeded tasks, task history records,
   notifications, 8 random users with random tasks
 
