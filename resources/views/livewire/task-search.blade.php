@@ -37,17 +37,44 @@
 
   {{-- TASK GRID --}}
   @if($tasks->isEmpty())
-    <div class="lf-card lf-empty">
-      <div class="lf-empty-icon"><i class="fa-regular fa-clipboard"></i></div>
+    <div class="lf-card lf-empty lf-scale-in">
+
+      {{-- Inline SVG illustration --}}
+      @if($search || $filter !== 'all')
+        {{-- Search empty state --}}
+        <svg width="100" height="100" viewBox="0 0 100 100" fill="none"
+             xmlns="http://www.w3.org/2000/svg"
+             style="margin:0 auto 1.25rem;display:block;color:var(--text-muted);opacity:.5">
+          <circle cx="42" cy="42" r="26" stroke="currentColor" stroke-width="3" fill="none"/>
+          <path d="M61 61l16 16" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          <path d="M34 42h16M42 34v16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" opacity=".4"/>
+        </svg>
+      @else
+        {{-- No tasks state --}}
+        <svg width="110" height="110" viewBox="0 0 110 110" fill="none"
+             xmlns="http://www.w3.org/2000/svg"
+             style="margin:0 auto 1.25rem;display:block;color:var(--text-muted);opacity:.45;
+                    animation:lf-float 4s ease-in-out infinite">
+          <rect x="18" y="14" width="74" height="86" rx="10" fill="currentColor" opacity=".08"/>
+          <rect x="22" y="18" width="66" height="78" rx="8" stroke="currentColor" stroke-width="2" fill="none" opacity=".25"/>
+          <rect x="38" y="8" width="34" height="16" rx="8" fill="currentColor" opacity=".15"/>
+          <rect x="46" y="12" width="18" height="8" rx="4" fill="currentColor" opacity=".3"/>
+          <rect x="30" y="44" width="50" height="6" rx="3" fill="currentColor" opacity=".15"/>
+          <rect x="30" y="58" width="38" height="6" rx="3" fill="currentColor" opacity=".10"/>
+          <rect x="30" y="72" width="44" height="6" rx="3" fill="currentColor" opacity=".08"/>
+          <circle cx="55" cy="95" r="0" fill="currentColor" opacity=".1"/>
+        </svg>
+      @endif
+
       <div class="lf-empty-title">
         @if($search) No tasks matching "{{ $search }}"
         @elseif($filter !== 'all') No {{ $filter }} priority tasks
-        @else No pending tasks
+        @else No pending tasks yet
         @endif
       </div>
       <div class="lf-empty-desc">
         @if($search || $filter !== 'all') Try adjusting your search or filter.
-        @else Click <strong>Add Task</strong> above to get started.
+        @else Click <strong>Add Task</strong> above to create your first task.
         @endif
       </div>
     </div>

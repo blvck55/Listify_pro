@@ -6,7 +6,7 @@
       <i class="fa-solid fa-plus"></i> Add Task
     </button>
   @else
-    <div class="lf-card lf-card-p" style="margin-bottom:1.5rem">
+    <div class="lf-card lf-card-p lf-form-slide" style="margin-bottom:1.5rem">
       <div style="font-size:15px;font-weight:700;color:var(--text-primary);margin-bottom:1.25rem">
         {{ $taskId ? 'Edit Task' : 'New Task' }}
       </div>

@@ -13,6 +13,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::view('/about', 'about')->name('about.show');
+Route::view('/contact', 'contact')->name('contact.show');
+Route::view('/terms', 'terms')->name('terms.show');
+
 // ── GOOGLE OAUTH ────────────────────────────────────────────────────
 Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
@@ -72,6 +76,8 @@ Route::middleware(['auth', 'admin'])
          ->name('reports');
     Route::get('/analytics',           [AdminController::class, 'analytics'])
          ->name('analytics');
+    Route::get('/analytics/data',      [AdminController::class, 'analyticsData'])
+         ->name('analytics.data');
     Route::get('/activity',            [AdminController::class, 'activity'])
          ->name('activity');
 

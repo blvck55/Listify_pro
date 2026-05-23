@@ -695,3 +695,157 @@ html.dark .lf-badge-gray   { background: #1C2333; color: #94A3B8; }
 
 /* ─── TAILWIND OVERRIDES ──────────────────────── */
 .min-h-screen { min-height: 100vh; }
+
+/* ─── 4-COLUMN GRID ──────────────────────────── */
+.lf-grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS & MOTION
+═══════════════════════════════════════════════ */
+
+@keyframes lf-fade-in   { from{opacity:0} to{opacity:1} }
+@keyframes lf-fade-up   { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes lf-fade-down { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes lf-scale-in  { from{opacity:0;transform:scale(.92)} to{opacity:1;transform:scale(1)} }
+@keyframes lf-slide-r   { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+@keyframes lf-float     { 0%,100%{transform:translateY(0px)} 50%{transform:translateY(-10px)} }
+@keyframes lf-float-sm  { 0%,100%{transform:translateY(0px) rotate(0deg)} 50%{transform:translateY(-7px) rotate(3deg)} }
+@keyframes lf-float-r   { 0%,100%{transform:translateY(0px) rotate(0deg)} 50%{transform:translateY(-5px) rotate(-2deg)} }
+@keyframes lf-pulse-dot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.6)} }
+@keyframes lf-pulse-ring{ 0%{box-shadow:0 0 0 0 rgba(37,99,235,.45)} 100%{box-shadow:0 0 0 10px rgba(37,99,235,0)} }
+@keyframes lf-shimmer   { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+@keyframes lf-spin      { to{transform:rotate(360deg)} }
+@keyframes lf-bounce-in { 0%{opacity:0;transform:scale(.4)} 55%{transform:scale(1.08)} 80%{transform:scale(.96)} 100%{opacity:1;transform:scale(1)} }
+@keyframes lf-gradient  { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+@keyframes lf-draw      { from{stroke-dashoffset:1} to{stroke-dashoffset:0} }
+@keyframes lf-blob      { 0%,100%{border-radius:42% 58% 70% 30%/45% 45% 55% 55%} 34%{border-radius:70% 30% 46% 54%/30% 60% 40% 70%} 67%{border-radius:100% 60% 60% 100%/100% 100% 60% 60%} }
+
+/* ── Utility animation classes ── */
+.lf-fade-in   { animation: lf-fade-in   .4s ease both; }
+.lf-fade-up   { animation: lf-fade-up   .5s ease both; }
+.lf-fade-down { animation: lf-fade-down .4s ease both; }
+.lf-scale-in  { animation: lf-scale-in  .3s ease both; }
+.lf-slide-r   { animation: lf-slide-r   .4s ease both; }
+.lf-float     { animation: lf-float    4s  ease-in-out infinite; }
+.lf-float-sm  { animation: lf-float-sm 3s  ease-in-out infinite; }
+.lf-float-r   { animation: lf-float-r  5s  ease-in-out infinite; }
+.lf-spin      { animation: lf-spin      1s  linear infinite; }
+.lf-bounce-in { animation: lf-bounce-in .6s ease both; }
+.lf-blob      { animation: lf-blob      8s  ease-in-out infinite; }
+
+/* ── Stagger delay helpers ── */
+.lf-d1 { animation-delay:.05s; }
+.lf-d2 { animation-delay:.10s; }
+.lf-d3 { animation-delay:.15s; }
+.lf-d4 { animation-delay:.20s; }
+.lf-d5 { animation-delay:.25s; }
+.lf-d6 { animation-delay:.30s; }
+.lf-d7 { animation-delay:.35s; }
+.lf-d8 { animation-delay:.45s; }
+
+/* ── Loading skeleton ── */
+.lf-skeleton {
+  background: linear-gradient(90deg, var(--border) 25%, var(--bg-card-hover) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: lf-shimmer 1.5s infinite;
+  border-radius: var(--r-sm);
+}
+
+/* ── Enhanced existing components ── */
+
+/* Alerts animate in */
+.lf-alert { animation: lf-fade-down .35s ease both; }
+
+/* Modal backdrop + modal */
+.lf-modal-backdrop.open { animation: lf-fade-in .2s ease both; }
+.lf-modal-backdrop.open .lf-modal { animation: lf-scale-in .25s ease both; }
+
+/* Notification badge pulse (only when there are items) */
+.lf-icon-btn .lf-badge { animation: lf-pulse-dot 2.4s ease-in-out infinite; }
+
+/* Stat tile hover lift */
+.lf-stat { transition: transform .2s, box-shadow .2s; }
+.lf-stat:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+
+/* Logo badge ring pulse on hover */
+.lf-logo:hover .lf-logo-badge { animation: lf-pulse-ring .6s ease; }
+
+/* Button press feel */
+.lf-btn:active       { transform: scale(.96); }
+.lf-action-btn:active{ transform: scale(.88); }
+
+/* Card smooth hover */
+.lf-card { transition: box-shadow .2s; }
+
+/* Panel action enhanced */
+.lf-panel-action { transition: border-color .2s, box-shadow .2s, transform .2s; }
+
+/* Welcome banner */
+.lf-welcome { animation: lf-fade-down .4s ease both; }
+
+/* Task tile grid — staggered entrance */
+.lf-grid-3 > *:nth-child(1) { animation: lf-fade-up .45s ease both; }
+.lf-grid-3 > *:nth-child(2) { animation: lf-fade-up .45s .07s ease both; }
+.lf-grid-3 > *:nth-child(3) { animation: lf-fade-up .45s .14s ease both; }
+.lf-grid-3 > *:nth-child(4) { animation: lf-fade-up .45s .21s ease both; }
+.lf-grid-3 > *:nth-child(5) { animation: lf-fade-up .45s .28s ease both; }
+.lf-grid-3 > *:nth-child(6) { animation: lf-fade-up .45s .35s ease both; }
+.lf-grid-3 > *:nth-child(7) { animation: lf-fade-up .45s .40s ease both; }
+.lf-grid-3 > *:nth-child(8) { animation: lf-fade-up .45s .45s ease both; }
+.lf-grid-3 > *:nth-child(n+9) { animation: lf-fade-up .45s .5s ease both; }
+
+/* Panel grid entrance */
+.lf-grid-2 > *:nth-child(1) { animation: lf-fade-up .4s .25s ease both; }
+.lf-grid-2 > *:nth-child(2) { animation: lf-fade-up .4s .35s ease both; }
+
+/* Stat / secondary card entrance */
+.lf-grid-4 > *:nth-child(1) { animation: lf-scale-in .35s .0s  ease both; }
+.lf-grid-4 > *:nth-child(2) { animation: lf-scale-in .35s .07s ease both; }
+.lf-grid-4 > *:nth-child(3) { animation: lf-scale-in .35s .14s ease both; }
+.lf-grid-4 > *:nth-child(4) { animation: lf-scale-in .35s .21s ease both; }
+
+/* Form slide-down when revealed */
+.lf-form-slide {
+  animation: lf-fade-up .3s ease both;
+  transform-origin: top center;
+}
+
+/* Hero decorative blob */
+.lf-hero-blob {
+  position: absolute;
+  border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+  animation: lf-blob 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Dropdown animate in */
+.lf-dropdown.open { animation: lf-fade-down .2s ease both; }
+
+/* Nav stagger on load */
+.lf-nav .lf-tab   { animation: lf-fade-in .3s ease both; }
+.lf-nav .lf-tab:nth-child(1) { animation-delay: .05s; }
+.lf-nav .lf-tab:nth-child(2) { animation-delay: .10s; }
+.lf-nav .lf-tab:nth-child(3) { animation-delay: .15s; }
+.lf-nav .lf-tab:nth-child(4) { animation-delay: .20s; }
+
+/* Table row entrance */
+.lf-table tbody tr { animation: lf-fade-up .35s ease both; }
+.lf-table tbody tr:nth-child(1) { animation-delay:.05s; }
+.lf-table tbody tr:nth-child(2) { animation-delay:.10s; }
+.lf-table tbody tr:nth-child(3) { animation-delay:.15s; }
+.lf-table tbody tr:nth-child(4) { animation-delay:.20s; }
+.lf-table tbody tr:nth-child(5) { animation-delay:.25s; }
+.lf-table tbody tr:nth-child(n+6){ animation-delay:.30s; }
+
+/* Notification list items */
+.lf-dropdown-item { transition: background .15s, transform .15s; }
+.lf-dropdown-item:hover { transform: translateX(2px); }
+
+/* Input focus ring expansion */
+.lf-input:focus, .lf-select:focus, .lf-textarea:focus {
+  transition: border-color .15s, box-shadow .2s;
+}
+
+/* Scroll-reveal helper (JS adds .lf-revealed) */
+.lf-reveal        { opacity:0; transform:translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.lf-reveal.lf-revealed { opacity:1; transform:translateY(0); }

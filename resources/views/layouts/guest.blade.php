@@ -32,7 +32,7 @@
             height:56px;display:flex;align-items:center;padding:0 1.5rem;
             justify-content:space-between">
   <a href="{{ route('welcome') }}" style="display:flex;align-items:center;gap:10px;text-decoration:none">
-    <div class="lf-logo-badge">L</div>
+    <img src="{{ asset('images/logo.svg') }}" alt="Listify logo" style="width:30px;height:30px;display:block" />
     <span class="lf-logo-text">Listify</span>
   </a>
   <button class="lf-theme-toggle" id="themeToggle" title="Toggle dark mode">

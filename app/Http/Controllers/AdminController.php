@@ -6,6 +6,7 @@ use App\Models\ActivityLog;
 use App\Models\Notification;
 use App\Models\Task;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -271,6 +272,55 @@ class AdminController extends Controller
             ],
             'priorityStats' => $priorityStats,
             'activeUsers' => $activeUsers,
+        ]);
+    }
+
+    /**
+     * GET /admin/analytics/data
+     * JSON endpoint for live analytics polling
+     */
+    public function analyticsData()
+    {
+        $stats = [
+            'total_users' => User::count(),
+            'total_tasks' => Task::count(),
+            'total_admins' => User::where('role', 'admin')->count(),
+            'total_completed' => Task::where('status', 'completed')->count(),
+            'completion_rate' => Task::count() > 0 ? round((Task::where('status', 'completed')->count() / Task::count()) * 100, 1) : 0,
+            'avg_tasks_per_user' => User::count() > 0 ? round(Task::count() / User::count(), 1) : 0,
+            'pending_tasks' => Task::where('status', 'pending')->count(),
+        ];
+
+        $priorityStats = Task::selectRaw('priority, COUNT(*) as count, SUM(CASE WHEN status = "completed" THEN 1 ELSE 0 END) as completed')
+            ->groupBy('priority')
+            ->get()
+            ->map(fn($priority) => [
+                'priority' => $priority->priority,
+                'count' => $priority->count,
+                'completed' => $priority->completed,
+            ]);
+
+        $statusStats = Task::selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->get()
+            ->mapWithKeys(fn($status) => [ $status->status => $status->count ]);
+
+        $topUsers = User::withCount(['tasks as recent_tasks' => fn($q) => $q->where('created_at', '>=', now()->subDays(30))])
+            ->having('recent_tasks', '>', 0)
+            ->orderByDesc('recent_tasks')
+            ->limit(5)
+            ->get()
+            ->map(fn($user) => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'recent_tasks' => $user->recent_tasks,
+            ]);
+
+        return response()->json([
+            'stats' => $stats,
+            'priorityStats' => $priorityStats,
+            'statusStats' => $statusStats,
+            'topUsers' => $topUsers,
         ]);
     }
 

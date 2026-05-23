@@ -47,8 +47,8 @@
 
     {{-- LEFT: Logo --}}
     <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard') }}"
-       class="lf-logo">
-      <div class="lf-logo-badge">L</div>
+       class="lf-logo" style="align-items:center">
+      <img src="{{ asset('images/logo.svg') }}" alt="Listify logo" class="lf-logo-img" style="width:32px;height:32px;display:block" />
       <span class="lf-logo-text">Listify</span>
     </a>
 
@@ -141,20 +141,33 @@
      FLASH MESSAGES
 ════════════════════════════════════ --}}
 @if(session('success') || session('error'))
-  <div class="lf-wrap" style="margin-top:1rem">
+  <div class="lf-wrap" style="margin-top:1rem" id="flashMessages">
     @if(session('success'))
-      <div class="lf-alert lf-alert-success">
-        <i class="fa-solid fa-circle-check"></i>
-        {{ session('success') }}
+      <div class="lf-alert lf-alert-success" style="display:flex;justify-content:space-between;align-items:center">
+        <span><i class="fa-solid fa-circle-check"></i> {{ session('success') }}</span>
+        <button onclick="this.closest('.lf-alert').style.opacity='0';setTimeout(()=>this.closest('.lf-alert').remove(),200)"
+                style="background:none;border:none;cursor:pointer;color:inherit;opacity:.6;padding:0;line-height:1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
     @endif
     @if(session('error'))
-      <div class="lf-alert lf-alert-error">
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        {{ session('error') }}
+      <div class="lf-alert lf-alert-error" style="display:flex;justify-content:space-between;align-items:center">
+        <span><i class="fa-solid fa-triangle-exclamation"></i> {{ session('error') }}</span>
+        <button onclick="this.closest('.lf-alert').style.opacity='0';setTimeout(()=>this.closest('.lf-alert').remove(),200)"
+                style="background:none;border:none;cursor:pointer;color:inherit;opacity:.6;padding:0;line-height:1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
       </div>
     @endif
   </div>
+  <script>
+    // Auto-dismiss flash messages after 4 seconds
+    setTimeout(() => {
+      const f = document.getElementById('flashMessages');
+      if (f) { f.style.transition = 'opacity .4s'; f.style.opacity = '0'; setTimeout(() => f.remove(), 400); }
+    }, 4000);
+  </script>
 @endif
 
 {{-- ═══════════════════════════════════════
@@ -174,9 +187,9 @@
       <span style="font-size:12px;color:var(--text-muted);font-weight:600">Listify</span>
     </div>
     <div style="display:flex;gap:1.5rem">
-      <a href="#">About</a>
-      <a href="#">Contact</a>
-      <a href="#">Terms</a>
+      <a href="{{ route('about.show') }}">About</a>
+      <a href="{{ route('contact.show') }}">Contact</a>
+      <a href="{{ route('terms.show') }}">Terms</a>
     </div>
   </div>
 </footer>
