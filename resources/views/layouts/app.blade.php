@@ -230,6 +230,8 @@ document.addEventListener('click', e => {
     document.querySelectorAll('.lf-dropdown').forEach(d => d.classList.remove('open'));
   }
 });
+
+
 </script>
 
 @livewireScripts
