@@ -136,6 +136,9 @@ if (isset($__slots)) unset($__slots);
               <i class="fa-solid fa-house" style="font-size:14px"></i> Dashboard
             </a>
           <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+          <a href="<?php echo e(route('profile.show')); ?>" class="lf-dropdown-item">
+            <i class="fa-solid fa-shield-halved" style="font-size:14px"></i> Security Settings
+          </a>
           <form method="POST" action="<?php echo e(route('logout')); ?>">
             <?php echo csrf_field(); ?>
             <button type="submit" class="lf-dropdown-item danger" style="border-top:1px solid var(--border);width:100%">
@@ -190,7 +193,7 @@ if (isset($__slots)) unset($__slots);
 <footer class="lf-footer">
   <div class="lf-wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
     <div style="display:flex;align-items:center;gap:8px">
-      <div class="lf-logo-badge" style="width:24px;height:24px;font-size:11px">L</div>
+      <img src="<?php echo e(asset('images/logo.svg')); ?>" alt="Listify" style="width:24px;height:24px;display:block" />
       <span style="font-size:12px;color:var(--text-muted);font-weight:600">Listify</span>
     </div>
     <div style="display:flex;gap:1.5rem">

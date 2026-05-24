@@ -22,9 +22,16 @@ return Application::configure(basePath: dirname(__DIR__))
         // This lets you use ->middleware('admin') on routes
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'adminOnly' => \App\Http\Middleware\AdminMiddleware::class,
             'redirect_admin_to_panel' => \App\Http\Middleware\HandleAdminRedirect::class,
         ]);
+
+        // Global middleware for security headers
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        // Return JSON errors for all /api/* routes instead of HTML redirects
+        $exceptions->shouldRenderJsonWhen(
+            fn ($request) => $request->is('api/*')
+        );
     })->create();

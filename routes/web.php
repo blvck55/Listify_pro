@@ -51,7 +51,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // 'admin' alias = AdminMiddleware (checks role === 'admin')
 // All URLs prefixed with /admin/
 
-Route::middleware(['auth', 'admin'])
+Route::middleware(['auth', 'verified', 'admin'])
      ->prefix('admin')
      ->name('admin.')
      ->group(function () {

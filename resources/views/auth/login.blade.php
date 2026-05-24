@@ -3,7 +3,7 @@
   <div class="lf-card" style="padding:2.5rem 2rem;box-shadow:var(--shadow-lg)">
 
     <div style="text-align:center;margin-bottom:2rem">
-      <div class="lf-logo-badge" style="width:48px;height:48px;font-size:20px;margin:0 auto 1rem">L</div>
+      <img src="{{ asset('images/logo.svg') }}" alt="Listify" style="width:48px;height:48px;margin:0 auto 1rem;display:block" />
       <h1 style="font-family:var(--font-head);font-size:1.6rem;font-weight:800;
                  letter-spacing:-.03em;color:var(--text-primary);margin-bottom:.35rem">
         Welcome back

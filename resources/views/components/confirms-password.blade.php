@@ -2,14 +2,25 @@
 
 @php
     $confirmableId = md5($attributes->wire('then'));
+    $thenMethod    = $attributes->get('wire:then', '');
 @endphp
 
+{{--
+    On click  → startConfirmingPassword (opens the modal below).
+    On password-confirmed → call the target method directly via $wire instead of
+    relying on wire:then + CustomEvent('then'), which breaks in Livewire 3 because
+    the 'then' name collides with Promise.then and the event doesn't bubble through
+    Livewire's delegation listener.
+--}}
 <span
-    {{ $attributes->wire('then') }}
     x-data
     x-ref="span"
     x-on:click="$wire.startConfirmingPassword('{{ $confirmableId }}')"
-    x-on:password-confirmed.window="setTimeout(() => $event.detail.id === '{{ $confirmableId }}' && $refs.span.dispatchEvent(new CustomEvent('then', { bubbles: false })), 250);"
+    x-on:password-confirmed.window="
+        setTimeout(() => {
+            if ($event.detail.id === '{{ $confirmableId }}') $wire.{{ $thenMethod }}()
+        }, 250)
+    "
 >
     {{ $slot }}
 </span>
@@ -23,13 +34,21 @@
     <x-slot name="content">
         {{ $content }}
 
-        <div class="mt-4" x-data="{}" x-on:confirming-password.window="setTimeout(() => $refs.confirmable_password.focus(), 250)">
-            <x-input type="password" class="mt-1 block w-3/4" placeholder="{{ __('Password') }}" autocomplete="current-password"
-                        x-ref="confirmable_password"
-                        wire:model="confirmablePassword"
-                        wire:keydown.enter="confirmPassword" />
+        <div style="margin-top:1rem"
+             x-data="{}"
+             x-on:confirming-password.window="setTimeout(() => $refs.confirmable_password.focus(), 250)">
+            <input type="password"
+                   class="lf-input"
+                   style="max-width:320px"
+                   placeholder="{{ __('Password') }}"
+                   autocomplete="current-password"
+                   x-ref="confirmable_password"
+                   wire:model="confirmablePassword"
+                   wire:keydown.enter="confirmPassword" />
 
-            <x-input-error for="confirmable_password" class="mt-2" />
+            @error('confirmable_password')
+                <div class="lf-field-error" style="margin-top:.4rem">{{ $message }}</div>
+            @enderror
         </div>
     </x-slot>
 
@@ -38,7 +57,7 @@
             {{ __('Cancel') }}
         </x-secondary-button>
 
-        <x-button class="ms-3" dusk="confirm-password-button" wire:click="confirmPassword" wire:loading.attr="disabled">
+        <x-button class="ms-3" wire:click="confirmPassword" wire:loading.attr="disabled">
             {{ $button }}
         </x-button>
     </x-slot>

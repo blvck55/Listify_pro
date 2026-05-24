@@ -1,116 +1,143 @@
 # Listify
 
-Listify is a Laravel-based task management application built for authenticated users and administrators.
-It provides task creation, editing, completion, deletion, history, and admin management with role-based access control.
+Listify is a Laravel-based task management application for authenticated users and administrators. The app supports task creation, category organization, task history, notifications, admin analytics, audit logging, and secure authentication flows.
 
+## Project Overview
 
-FRAMEWORK & ARCHITECTURE
-- Migrated from SSP1 plain PHP to Laravel 13 with PHP 8.3
-- Implemented MVC architecture with clean separation of concerns
-- Configured MySQL database connection via Eloquent ORM
-- Set up Vite + Tailwind CSS build pipeline with dark mode support
+Listify helps users manage personal and shared tasks while giving administrators a dedicated control panel for monitoring users, tasks, reports, and activity. It includes:
 
-AUTHENTICATION
-- Installed Laravel Jetstream + Fortify (Livewire stack)
-- Implemented register, login, logout, email verification
-- Added forgot/reset password functionality
-- Configured two-factor authentication (2FA) via Fortify
-- Integrated Google OAuth via Laravel Socialite
-- Custom styled all auth pages (login, register, forgot-password,
-  reset-password) to match Listify design system
+- User task dashboard with create/edit/delete functionality
+- Category-based task organization
+- Task history and notifications
+- Admin panel with user management and analytics
+- Secure access using Laravel authentication, email verification, and two-factor auth
+- Public landing pages for about, contact, and terms
 
-MODELS & DATABASE (5 Eloquent models)
-- User: role (user/admin), google_id, 2FA fields, HasApiTokens
-- Task: title, subtitle, description, due_date, priority, status,
-  category_id with belongsTo User and Category
-- Category: user-owned task categories with colour coding
-- TaskHistory: audit trail logging all task state changes
-- Notification: in-app alerts stored in listify_notifications table
-- Migrations: tasks, categories, task_histories,
-  listify_notifications, add_role_to_users, add_category_id_to_tasks
+## Technologies Used
 
-FACTORIES (5 factories)
-- UserFactory: realistic users with weighted role distribution
-- CategoryFactory: named categories with hex colour codes
-- TaskFactory: tasks with pending/completed/highPriority states
-- TaskHistoryFactory: history records with created/completed states
-- NotificationFactory: typed notifications with read/unread states
+- PHP 8.3
+- Laravel 13
+- Laravel Jetstream (Livewire stack)
+- Laravel Fortify
+- Laravel Sanctum
+- Blade templates
+- Livewire components
+- MySQL / Eloquent ORM
+- Vite + Tailwind CSS
+- Chart.js for analytics
+- Google Fonts (DM Sans, Inter)
 
-LIVEWIRE COMPONENTS (6 components)
-- TaskSearch: live search + priority filter (wire:model.live)
-- TaskForm: inline reactive add/edit form with live validation
-- NotificationBell: real-time bell with unread count and dropdown
-- CategoryManager: inline create/delete categories with colour picker
-- AdminUserTable: searchable, sortable, paginated user management
-- TaskHistoryFeed: filterable activity feed by action type
+## Installation Steps
 
-CONTROLLERS
-- TaskController: full CRUD + complete toggle + ownership validation
-  (abort 403) + TaskHistory logging on every state change
-- AdminController: dashboard, users, tasks, reports with
-  status/priority/role distribution analytics
-- Api/TaskApiController: 6 REST endpoints with Sanctum protection
+1. Clone the repository:
 
-SANCTUM API (10 endpoints)
-- POST   /api/login        - returns Bearer token
-- POST   /api/register     - create account + token
-- GET    /api/user         - current authenticated user
-- POST   /api/logout       - revoke current token
-- GET    /api/tasks        - list all user tasks
-- POST   /api/tasks        - create task
-- GET    /api/tasks/{id}   - get single task
-- PUT    /api/tasks/{id}   - update task
-- DELETE /api/tasks/{id}   - delete task
-- PATCH  /api/tasks/{id}/complete - toggle status
+   ```powershell
+   git clone <repository-url> listify
+   cd listify
+   ```
 
-SECURITY
-- bcrypt password hashing via Jetstream
-- CSRF protection on all forms (@csrf)
-- Ownership validation on all task mutations (abort 403)
-- AdminMiddleware role-based access control for /admin/* routes
-- Input validation on all controller methods
-- Eloquent prepared statements preventing SQL injection
-- $fillable mass assignment protection on all models
-- Sanctum Bearer token authentication for API routes
-- APP_DEBUG=false enforced in production config
+2. Install PHP dependencies:
 
-ADMIN PANEL
-- Dashboard with total users/tasks stat tiles + recent activity
-- User management: search, role toggle, delete with self-guard
-- All tasks system-wide view with delete
-- Reports: task status distribution, priority distribution,
-  user roles breakdown with progress bar charts
+   ```powershell
+   composer install
+   ```
 
-UI & DESIGN SYSTEM
-- Professional CSS design system (700+ lines) using CSS variables
-- Dark mode via html.dark class, persisted in localStorage,
-  no flash on load
-- DM Sans (headings) + Inter (body) from Google Fonts
-- Component classes: lf-card, lf-stat, lf-task-tile, lf-btn,
-  lf-badge, lf-pill, lf-table, lf-modal, lf-alert, lf-empty
-- Sticky navbar with centred tabs, theme toggle, notification
-  bell, profile dropdown
-- Responsive design tested on desktop, tablet, mobile
-- Delete confirmation modal on all destructive actions
+3. Install frontend dependencies:
 
-PAGES (9 total)
-- Landing page (public)
-- Login, Register, Forgot password, Reset password (styled)
-- User dashboard with live search and task tiles
-- Add task / Edit task forms
-- Task history feed
-- Admin dashboard, User management, All tasks, System reports
+   ```powershell
+   npm install
+   ```
 
-SEEDER & DEMO DATA
-- DemoSeeder using all 5 factories
-- Admin account: admin@listify.local / admin1234
-- 3 categories, 5 seeded tasks, task history records,
-  notifications, 8 random users with random tasks
+4. Copy the environment file and configure it:
 
-DEPLOYMENT PREPARATION
-- deployment/server-setup.sh for fresh Ubuntu 22.04 EC2 instance
-- deployment/nginx.conf for Nginx web server configuration
-- deployment/deploy.sh for zero-downtime update workflow
-- .github/workflows/deploy.yml for GitHub Actions CI/CD
-- .env.production template for production environment
-- deployment/SUBMISSION_CHECKLIST.md for final submission steps
+   ```powershell
+   cp .env.example .env
+   ```
+
+   Update `.env` values for database connection, `APP_URL`, and email settings.
+
+5. Generate the application key:
+
+   ```powershell
+   php artisan key:generate
+   ```
+
+6. Run database migrations:
+
+   ```powershell
+   php artisan migrate
+   ```
+
+7. Seed the database:
+
+   ```powershell
+   php artisan db:seed
+   ```
+
+8. Build frontend assets:
+
+   ```powershell
+   npm run build
+   ```
+
+9. Run the application locally:
+
+   ```powershell
+   php artisan serve
+   ```
+
+## Database Setup
+
+1. Set database credentials in `.env`:
+
+   ```dotenv
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=listify
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+
+2. Create the database if it does not exist.
+3. Run migrations and seeders:
+
+   ```powershell
+   php artisan migrate --seed
+   ```
+
+4. If you need to reset and reseed the database:
+
+   ```powershell
+   php artisan migrate:fresh --seed
+   ```
+
+## Seeder Credentials
+
+The demo data seeds the following accounts:
+
+- Admin account:
+  - Email: `admin@listify.com`
+  - Password: `password`
+
+- Test user account:
+  - Email: `test@listify.com`
+  - Password: `password`
+
+If `CreateAdminSeeder` is used instead, seeded credentials are:
+
+- Admin account:
+  - Email: `admin@listify.local`
+  - Password: `admin123456`
+
+- Regular user account:
+  - Email: `user@listify.local`
+  - Password: `user123456`
+
+## Notes
+
+- Email verification is enabled for protected routes.
+- Password reset and forgot password flows are available.
+- Admin routes are protected with role-based middleware.
+- CORS is configured without wildcard origins.
+- Security headers are applied globally via middleware.

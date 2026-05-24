@@ -1,98 +1,126 @@
-<x-action-section>
-    <x-slot name="title">
-        {{ __('Browser Sessions') }}
-    </x-slot>
+<div>
+  <div class="lf-card lf-card-p lf-fade-up">
 
-    <x-slot name="description">
-        {{ __('Manage and log out your active sessions on other browsers and devices.') }}
-    </x-slot>
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:1rem">
+      <div style="width:34px;height:34px;border-radius:var(--r-md);
+                  background:linear-gradient(135deg,#F59E0B,#D97706);
+                  display:flex;align-items:center;justify-content:center">
+        <i class="fa-solid fa-desktop" style="color:#fff;font-size:14px"></i>
+      </div>
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--text-primary)">Browser Sessions</div>
+        <div style="font-size:12px;color:var(--text-secondary)">Manage and log out your active sessions on other devices.</div>
+      </div>
+    </div>
 
-    <x-slot name="content">
-        <div class="max-w-xl text-sm text-gray-600">
-            {{ __('If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.') }}
-        </div>
+    <div style="border-top:1px solid var(--border);margin-bottom:1.25rem"></div>
 
-        @if (count($this->sessions) > 0)
-            <div class="mt-5 space-y-6">
-                <!-- Other Browser Sessions -->
-                @foreach ($this->sessions as $session)
-                    <div class="flex items-center">
-                        <div>
-                            @if ($session->agent->isDesktop())
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 text-gray-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" />
-                                </svg>
-                            @else
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8 text-gray-500">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
-                                </svg>
-                            @endif
-                        </div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1.25rem">
+      If necessary, you may log out of all of your other browser sessions across all of your devices.
+      If you feel your account has been compromised, you should also update your password.
+    </p>
 
-                        <div class="ms-3">
-                            <div class="text-sm text-gray-600">
-                                {{ $session->agent->platform() ? $session->agent->platform() : __('Unknown') }} - {{ $session->agent->browser() ? $session->agent->browser() : __('Unknown') }}
-                            </div>
-
-                            <div>
-                                <div class="text-xs text-gray-500">
-                                    {{ $session->ip_address }},
-
-                                    @if ($session->is_current_device)
-                                        <span class="text-green-500 font-semibold">{{ __('This device') }}</span>
-                                    @else
-                                        {{ __('Last active') }} {{ $session->last_active }}
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
+    @if (count($this->sessions) > 0)
+      <div style="margin-bottom:1.25rem;display:flex;flex-direction:column;gap:.6rem">
+        @foreach ($this->sessions as $session)
+          <div style="display:flex;align-items:center;gap:.75rem;padding:.75rem;
+                      background:var(--bg-card-hover);border:1px solid var(--border);
+                      border-radius:var(--r-md)">
+            <div style="color:var(--text-secondary);font-size:1.1rem;flex-shrink:0;width:20px;text-align:center">
+              @if ($session->agent->isDesktop())
+                <i class="fa-solid fa-desktop"></i>
+              @else
+                <i class="fa-solid fa-mobile-screen"></i>
+              @endif
             </div>
-        @endif
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--text-primary)">
+                {{ $session->agent->platform() ?: 'Unknown' }} &mdash; {{ $session->agent->browser() ?: 'Unknown' }}
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:2px">
+                {{ $session->ip_address }}
+                @if ($session->is_current_device)
+                  &middot; <span style="color:var(--success);font-weight:600">This device</span>
+                @else
+                  &middot; Last active {{ $session->last_active }}
+                @endif
+              </div>
+            </div>
+          </div>
+        @endforeach
+      </div>
+    @endif
 
-        <div class="flex items-center mt-5">
-            <x-button wire:click="confirmLogout" wire:loading.attr="disabled">
-                {{ __('Log Out Other Browser Sessions') }}
-            </x-button>
+    <div style="display:flex;align-items:center;gap:1rem">
+      <button class="lf-btn lf-btn-secondary" wire:click="confirmLogout" wire:loading.attr="disabled">
+        <i class="fa-solid fa-right-from-bracket"></i> Log Out Other Sessions
+      </button>
+      <span x-data="{ show: false }"
+            x-on:loggedOut.window="show=true;setTimeout(()=>show=false,2500)"
+            x-show="show"
+            x-transition
+            style="display:none;font-size:13px;color:var(--success);font-weight:600">
+        <i class="fa-solid fa-circle-check"></i> Done.
+      </span>
+    </div>
 
-            <x-action-message class="ms-3" on="loggedOut">
-                {{ __('Done.') }}
-            </x-action-message>
+  </div>
+
+  {{-- Confirmation Modal --}}
+  <div x-data="{ show: @entangle('confirmingLogout') }"
+       x-show="show"
+       x-on:keydown.escape.window="show = false"
+       style="display:none;position:fixed;inset:0;z-index:50;overflow-y:auto;padding:1.5rem 1rem">
+
+    <div x-show="show"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         x-on:click="show = false"
+         style="position:fixed;inset:0;background:rgba(0,0,0,.55)"></div>
+
+    <div x-show="show"
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 translate-y-2"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-2"
+         style="position:relative;max-width:480px;margin:3rem auto;z-index:1">
+      <div class="lf-card lf-card-p">
+        <div style="font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:.4rem">
+          Log Out Other Browser Sessions
         </div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-bottom:1.25rem">
+          Please enter your password to confirm you would like to log out of your other browser sessions.
+        </div>
+        <div class="lf-form-group" style="margin-bottom:1.25rem"
+             x-data="{}"
+             x-on:confirming-logout-other-browser-sessions.window="setTimeout(() => $refs.sessionPwd.focus(), 250)">
+          <label class="lf-label">Password</label>
+          <input type="password" class="lf-input" placeholder="Enter your password"
+                 x-ref="sessionPwd"
+                 wire:model="password"
+                 wire:keydown.enter="logoutOtherBrowserSessions"
+                 autocomplete="current-password">
+          @error('password')
+            <div class="lf-field-error">{{ $message }}</div>
+          @enderror
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:.75rem">
+          <button class="lf-btn lf-btn-ghost" wire:click="$set('confirmingLogout', false)" wire:loading.attr="disabled">
+            Cancel
+          </button>
+          <button class="lf-btn lf-btn-primary" wire:click="logoutOtherBrowserSessions" wire:loading.attr="disabled">
+            <i class="fa-solid fa-right-from-bracket"></i> Log Out
+          </button>
+        </div>
+      </div>
+    </div>
 
-        <!-- Log Out Other Devices Confirmation Modal -->
-        <x-dialog-modal wire:model.live="confirmingLogout">
-            <x-slot name="title">
-                {{ __('Log Out Other Browser Sessions') }}
-            </x-slot>
+  </div>
 
-            <x-slot name="content">
-                {{ __('Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.') }}
-
-                <div class="mt-4" x-data="{}" x-on:confirming-logout-other-browser-sessions.window="setTimeout(() => $refs.password.focus(), 250)">
-                    <x-input type="password" class="mt-1 block w-3/4"
-                                autocomplete="current-password"
-                                placeholder="{{ __('Password') }}"
-                                x-ref="password"
-                                wire:model="password"
-                                wire:keydown.enter="logoutOtherBrowserSessions" />
-
-                    <x-input-error for="password" class="mt-2" />
-                </div>
-            </x-slot>
-
-            <x-slot name="footer">
-                <x-secondary-button wire:click="$toggle('confirmingLogout')" wire:loading.attr="disabled">
-                    {{ __('Cancel') }}
-                </x-secondary-button>
-
-                <x-button class="ms-3"
-                            wire:click="logoutOtherBrowserSessions"
-                            wire:loading.attr="disabled">
-                    {{ __('Log Out Other Browser Sessions') }}
-                </x-button>
-            </x-slot>
-        </x-dialog-modal>
-    </x-slot>
-</x-action-section>
+</div>

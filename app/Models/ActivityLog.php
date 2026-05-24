@@ -17,7 +17,7 @@ class ActivityLog extends Model
     ];
 
     protected $casts = [
-        'changes' => 'json',
+        'changes' => 'array',
         'created_at' => 'datetime',
     ];
 

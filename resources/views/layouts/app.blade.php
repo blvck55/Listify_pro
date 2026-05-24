@@ -124,6 +124,9 @@
               <i class="fa-solid fa-house" style="font-size:14px"></i> Dashboard
             </a>
           @endif
+          <a href="{{ route('profile.show') }}" class="lf-dropdown-item">
+            <i class="fa-solid fa-shield-halved" style="font-size:14px"></i> Security Settings
+          </a>
           <form method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="lf-dropdown-item danger" style="border-top:1px solid var(--border);width:100%">
@@ -183,7 +186,7 @@
 <footer class="lf-footer">
   <div class="lf-wrap" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
     <div style="display:flex;align-items:center;gap:8px">
-      <div class="lf-logo-badge" style="width:24px;height:24px;font-size:11px">L</div>
+      <img src="{{ asset('images/logo.svg') }}" alt="Listify" style="width:24px;height:24px;display:block" />
       <span style="font-size:12px;color:var(--text-muted);font-weight:600">Listify</span>
     </div>
     <div style="display:flex;gap:1.5rem">

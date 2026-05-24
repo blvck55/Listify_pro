@@ -43,6 +43,13 @@
     </div>
   </div>
 
+  {{-- SET PASSWORD (Google OAuth users only — they have no known password) --}}
+  @if (Auth::user()->google_id)
+    <div style="margin-bottom:1.5rem">
+      @livewire('set-password-form')
+    </div>
+  @endif
+
   {{-- TWO-FACTOR AUTHENTICATION --}}
   @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication())
     <div style="margin-bottom:1.5rem">
@@ -50,8 +57,8 @@
     </div>
   @endif
 
-  {{-- UPDATE PASSWORD --}}
-  @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::updatePasswords()))
+  {{-- UPDATE PASSWORD (email/password users only — OAuth users use Set Password above) --}}
+  @if (!Auth::user()->google_id && Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::updatePasswords()))
     <div style="margin-bottom:1.5rem">
       @livewire('profile.update-password-form')
     </div>
