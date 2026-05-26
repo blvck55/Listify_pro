@@ -25,6 +25,8 @@
 
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   @livewireStyles
+  @livewireScriptConfig
+  <script defer src="{{ asset('js/livewire.min.js') }}"></script>
 
   {{-- Apply dark mode BEFORE paint to avoid flash --}}
   <script>
@@ -47,7 +49,7 @@
 
     {{-- LEFT: Logo --}}
     <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard') }}"
-       class="lf-logo" style="align-items:center">
+       class="lf-logo" style="align-items:center;position:relative;z-index:10">
       <img src="{{ asset('images/logo.svg') }}" alt="Listify logo" class="lf-logo-img" style="width:32px;height:32px;display:block" />
       <span class="lf-logo-text">Listify</span>
     </a>
@@ -138,7 +140,53 @@
 
     </div>
   </div>
+
+  {{-- Mobile menu dropdown --}}
+  <div class="lf-mobile-menu" id="mobileMenu">
+    @if(Auth::user()->isAdmin())
+      <a href="{{ route('admin.users') }}"
+         class="lf-tab {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+        <i class="fa-solid fa-users fa-xs" style="margin-right:8px;opacity:.7"></i>Users
+      </a>
+      <a href="{{ route('admin.dashboard') }}"
+         class="lf-tab {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+        <i class="fa-solid fa-list-check fa-xs" style="margin-right:8px;opacity:.7"></i>Tasks
+      </a>
+      <a href="{{ route('admin.reports') }}"
+         class="lf-tab {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
+        <i class="fa-solid fa-chart-bar fa-xs" style="margin-right:8px;opacity:.7"></i>Reports
+      </a>
+      <form method="POST" action="{{ route('logout') }}" style="width:100%">
+        @csrf
+        <button type="submit" class="lf-tab" style="width:100%;text-align:left">
+          <i class="fa-solid fa-right-from-bracket fa-xs" style="margin-right:8px;opacity:.7"></i>Logout
+        </button>
+      </form>
+    @else
+      <a href="{{ route('dashboard') }}"
+         class="lf-tab {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+        <i class="fa-solid fa-house fa-xs" style="margin-right:8px;opacity:.7"></i>Dashboard
+      </a>
+      <a href="{{ route('tasks.history') }}"
+         class="lf-tab {{ request()->routeIs('tasks.history') ? 'active' : '' }}">
+        <i class="fa-solid fa-clock-rotate-left fa-xs" style="margin-right:8px;opacity:.7"></i>History
+      </a>
+      <form method="POST" action="{{ route('logout') }}" style="width:100%">
+        @csrf
+        <button type="submit" class="lf-tab" style="width:100%;text-align:left">
+          <i class="fa-solid fa-right-from-bracket fa-xs" style="margin-right:8px;opacity:.7"></i>Logout
+        </button>
+      </form>
+    @endif
+  </div>
 </nav>
+
+{{-- Mobile menu button (positioned below logo) --}}
+<button class="lf-mobile-menu-toggle" id="mobileMenuToggle" title="Toggle menu">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
 
 {{-- ═══════════════════════════════════════
      FLASH MESSAGES
@@ -231,9 +279,51 @@ document.addEventListener('click', e => {
   }
 });
 
+// Mobile menu toggle
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+
+mobileMenuToggle.addEventListener('click', () => {
+  mobileMenuToggle.classList.toggle('active');
+  mobileMenu.classList.toggle('open');
+});
+
+// Close mobile menu when a link is clicked
+mobileMenu.querySelectorAll('a, button').forEach(item => {
+  item.addEventListener('click', () => {
+    mobileMenuToggle.classList.remove('active');
+    mobileMenu.classList.remove('open');
+  });
+});
+
+function updateMobileMenuVisibility() {
+  if (window.innerWidth > 768) {
+    mobileMenuToggle.style.display = 'none';
+    mobileMenu.style.display = 'none';
+    mobileMenu.classList.remove('open');
+    mobileMenuToggle.classList.remove('active');
+  } else {
+    mobileMenuToggle.style.display = 'flex';
+    if (!mobileMenu.classList.contains('open')) {
+      mobileMenu.style.display = 'none';
+    }
+  }
+}
+
+window.addEventListener('resize', updateMobileMenuVisibility);
+updateMobileMenuVisibility();
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('.lf-nav')) {
+    mobileMenuToggle.classList.remove('active');
+    mobileMenu.classList.remove('open');
+    if (window.innerWidth > 768) {
+      mobileMenu.style.display = 'none';
+    }
+  }
+});
 
 </script>
-
-@livewireScripts
 </body>
 </html>

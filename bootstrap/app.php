@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 // FILE LOCATION: bootstrap/app.php
 // PURPOSE: Application bootstrap — registers middleware aliases
@@ -18,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Trust AWS Elastic Beanstalk load balancer proxies
+        $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_AWS_ELB);
+
         // Register custom middleware aliases
         // This lets you use ->middleware('admin') on routes
         $middleware->alias([
