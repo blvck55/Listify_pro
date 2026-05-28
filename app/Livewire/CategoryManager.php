@@ -3,7 +3,11 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
+/**
+ * Livewire component: CategoryManager — create and manage user categories.
+ */
 class CategoryManager extends Component
 {
     public string $name = '';
@@ -17,7 +21,7 @@ class CategoryManager extends Component
 
     public function getCategories()
     {
-        return \App\Models\Category::where('user_id', auth()->id())
+        return \App\Models\Category::where('user_id', Auth::id())
             ->withCount('tasks')
             ->get();
     }
@@ -27,7 +31,7 @@ class CategoryManager extends Component
         $this->validate();
 
         \App\Models\Category::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'name'    => $this->name,
             'colour'  => $this->colour,
         ]);
@@ -38,7 +42,7 @@ class CategoryManager extends Component
 
     public function delete(int $id)
     {
-        $cat = \App\Models\Category::where('user_id', auth()->id())->findOrFail($id);
+        $cat = \App\Models\Category::where('user_id', Auth::id())->findOrFail($id);
         $cat->delete();
     }
 

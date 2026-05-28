@@ -14,7 +14,7 @@
 /.zed
 /auth.json
 /node_modules
-/public/build
+# public/build is intentionally tracked so EB receives pre-compiled assets
 /public/fonts-manifest.dev.json
 /public/hot
 /public/storage

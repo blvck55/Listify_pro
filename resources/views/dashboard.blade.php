@@ -8,12 +8,15 @@
 
     {{-- Decorative circles --}}
     <div style="position:absolute;top:-30px;right:-30px;width:200px;height:200px;
-                border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none"></div>
+                border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;
+                display:none" class="lf-show-md"></div>
     <div style="position:absolute;bottom:-20px;right:160px;width:100px;height:100px;
-                border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none"></div>
+                border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;
+                display:none" class="lf-show-md"></div>
 
     {{-- Inline SVG illustration (right side) --}}
-    <div style="position:absolute;right:2rem;top:50%;transform:translateY(-50%);opacity:.25;pointer-events:none">
+    <div style="position:absolute;right:2rem;top:50%;transform:translateY(-50%);opacity:.25;pointer-events:none;
+                display:none" class="lf-show-lg">
       <svg width="120" height="100" viewBox="0 0 120 100" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="10" y="10" width="100" height="80" rx="10" fill="white"/>
         <rect x="20" y="25" width="50" height="7" rx="3.5" fill="white" opacity=".6"/>

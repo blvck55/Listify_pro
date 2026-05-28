@@ -14,6 +14,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>Listify — {{ $pageTitle ?? 'Dashboard' }}</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+  <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+  <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
   {{-- Google Fonts: DM Sans (headings) + Inter (body) --}}
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,8 +30,6 @@
 
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   @livewireStyles
-  @livewireScriptConfig
-  <script defer src="{{ asset('js/livewire.min.js') }}"></script>
 
   {{-- Apply dark mode BEFORE paint to avoid flash --}}
   <script>
@@ -47,12 +50,21 @@
 <nav class="lf-nav">
   <div class="lf-wrap lf-nav-inner">
 
-    {{-- LEFT: Logo --}}
-    <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard') }}"
-       class="lf-logo" style="align-items:center;position:relative;z-index:10">
-      <img src="{{ asset('images/logo.svg') }}" alt="Listify logo" class="lf-logo-img" style="width:32px;height:32px;display:block" />
-      <span class="lf-logo-text">Listify</span>
-    </a>
+    {{-- LEFT: Logo + Mobile Hamburger --}}
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard') }}"
+         class="lf-logo" style="align-items:center;position:relative;z-index:10">
+        <img src="{{ asset('images/logo.svg') }}" alt="Listify logo" class="lf-logo-img" style="width:32px;height:32px;display:block" />
+        <span class="lf-logo-text">Listify</span>
+      </a>
+
+      <button class="lf-mobile-menu-toggle" id="mobileMenuToggle" title="Toggle menu"
+              aria-label="Open navigation menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
 
     {{-- CENTRE: Tab navigation --}}
     <div class="lf-nav-tabs" style="position:absolute;left:50%;transform:translateX(-50%);">
@@ -64,6 +76,10 @@
         <a href="{{ route('admin.dashboard') }}"
            class="lf-tab {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
           <i class="fa-solid fa-list-check fa-xs" style="margin-right:5px;opacity:.7"></i>Tasks
+        </a>
+        <a href="{{ route('admin.groups') }}"
+           class="lf-tab {{ request()->routeIs('admin.groups') ? 'active' : '' }}">
+          <i class="fa-solid fa-users-gear fa-xs" style="margin-right:5px;opacity:.7"></i>Groups
         </a>
         <a href="{{ route('admin.reports') }}"
            class="lf-tab {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
@@ -79,6 +95,14 @@
         <a href="{{ route('dashboard') }}"
            class="lf-tab {{ request()->routeIs('dashboard') ? 'active' : '' }}">
           <i class="fa-solid fa-house fa-xs" style="margin-right:5px;opacity:.7"></i>Dashboard
+        </a>
+        <a href="{{ route('notes.index') }}"
+           class="lf-tab {{ request()->routeIs('notes.index') ? 'active' : '' }}">
+          <i class="fa-regular fa-note-sticky fa-xs" style="margin-right:5px;opacity:.7"></i>Notes
+        </a>
+        <a href="{{ route('calendar.index') }}"
+           class="lf-tab {{ request()->routeIs('calendar.index') ? 'active' : '' }}">
+          <i class="fa-regular fa-calendar fa-xs" style="margin-right:5px;opacity:.7"></i>Calendar
         </a>
         <a href="{{ route('tasks.history') }}"
            class="lf-tab {{ request()->routeIs('tasks.history') ? 'active' : '' }}">
@@ -105,10 +129,28 @@
       <livewire:notification-bell />
 
       {{-- Profile --}}
-      <div style="position:relative">
-        <button class="lf-icon-btn" onclick="toggleDropdown('profileDrop')" title="Account">
-          <i class="fa-regular fa-circle-user"></i>
+      <div style="position:relative;display:flex;align-items:center;gap:6px">
+        {{-- Avatar → links directly to profile page --}}
+        <a href="{{ route('profile.show') }}" title="Edit Profile"
+           style="padding:0;overflow:hidden;border-radius:50%;width:36px;height:36px;
+                  display:flex;align-items:center;justify-content:center;
+                  border:2px solid var(--border);transition:border-color .2s"
+           onmouseover="this.style.borderColor='var(--accent-indigo)'"
+           onmouseout="this.style.borderColor='var(--border)'">
+          @if(Auth::user()->profile_photo_url)
+            <img src="{{ Auth::user()->profile_photo_url }}" alt="Profile"
+                 style="width:36px;height:36px;object-fit:cover;border-radius:50%">
+          @else
+            <i class="fa-regular fa-circle-user" style="font-size:20px;color:var(--text-secondary)"></i>
+          @endif
+        </a>
+
+        {{-- Chevron → opens dropdown --}}
+        <button class="lf-icon-btn" onclick="toggleDropdown('profileDrop')" title="Account options"
+                style="width:22px;height:22px;border-radius:var(--r-sm);padding:0;font-size:11px">
+          <i class="fa-solid fa-chevron-down"></i>
         </button>
+
         <div class="lf-dropdown" id="profileDrop">
           <div class="lf-dropdown-header">
             <div style="font-size:14px;font-weight:700;color:var(--text-primary)">{{ Auth::user()->name }}</div>
@@ -117,17 +159,8 @@
               {{ Auth::user()->role }}
             </span>
           </div>
-          @if(Auth::user()->isAdmin())
-            <a href="{{ route('admin.dashboard') }}" class="lf-dropdown-item">
-              <i class="fa-solid fa-gauge" style="font-size:14px"></i> Admin Panel
-            </a>
-          @else
-            <a href="{{ route('dashboard') }}" class="lf-dropdown-item">
-              <i class="fa-solid fa-house" style="font-size:14px"></i> Dashboard
-            </a>
-          @endif
           <a href="{{ route('profile.show') }}" class="lf-dropdown-item">
-            <i class="fa-solid fa-shield-halved" style="font-size:14px"></i> Security Settings
+            <i class="fa-solid fa-user-pen" style="font-size:14px"></i> Edit Profile
           </a>
           <form method="POST" action="{{ route('logout') }}">
             @csrf
@@ -144,16 +177,16 @@
   {{-- Mobile menu dropdown --}}
   <div class="lf-mobile-menu" id="mobileMenu">
     @if(Auth::user()->isAdmin())
-      <a href="{{ route('admin.users') }}"
-         class="lf-tab {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+      <a href="{{ route('admin.users') }}" class="lf-tab {{ request()->routeIs('admin.users') ? 'active' : '' }}">
         <i class="fa-solid fa-users fa-xs" style="margin-right:8px;opacity:.7"></i>Users
       </a>
-      <a href="{{ route('admin.dashboard') }}"
-         class="lf-tab {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+      <a href="{{ route('admin.dashboard') }}" class="lf-tab {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
         <i class="fa-solid fa-list-check fa-xs" style="margin-right:8px;opacity:.7"></i>Tasks
       </a>
-      <a href="{{ route('admin.reports') }}"
-         class="lf-tab {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
+      <a href="{{ route('admin.groups') }}" class="lf-tab {{ request()->routeIs('admin.groups') ? 'active' : '' }}">
+        <i class="fa-solid fa-users-gear fa-xs" style="margin-right:8px;opacity:.7"></i>Groups
+      </a>
+      <a href="{{ route('admin.reports') }}" class="lf-tab {{ request()->routeIs('admin.reports') ? 'active' : '' }}">
         <i class="fa-solid fa-chart-bar fa-xs" style="margin-right:8px;opacity:.7"></i>Reports
       </a>
       <form method="POST" action="{{ route('logout') }}" style="width:100%">
@@ -163,12 +196,16 @@
         </button>
       </form>
     @else
-      <a href="{{ route('dashboard') }}"
-         class="lf-tab {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+      <a href="{{ route('dashboard') }}" class="lf-tab {{ request()->routeIs('dashboard') ? 'active' : '' }}">
         <i class="fa-solid fa-house fa-xs" style="margin-right:8px;opacity:.7"></i>Dashboard
       </a>
-      <a href="{{ route('tasks.history') }}"
-         class="lf-tab {{ request()->routeIs('tasks.history') ? 'active' : '' }}">
+      <a href="{{ route('notes.index') }}" class="lf-tab {{ request()->routeIs('notes.index') ? 'active' : '' }}">
+        <i class="fa-regular fa-note-sticky fa-xs" style="margin-right:8px;opacity:.7"></i>Notes
+      </a>
+      <a href="{{ route('calendar.index') }}" class="lf-tab {{ request()->routeIs('calendar.index') ? 'active' : '' }}">
+        <i class="fa-regular fa-calendar fa-xs" style="margin-right:8px;opacity:.7"></i>Calendar
+      </a>
+      <a href="{{ route('tasks.history') }}" class="lf-tab {{ request()->routeIs('tasks.history') ? 'active' : '' }}">
         <i class="fa-solid fa-clock-rotate-left fa-xs" style="margin-right:8px;opacity:.7"></i>History
       </a>
       <form method="POST" action="{{ route('logout') }}" style="width:100%">
@@ -181,12 +218,6 @@
   </div>
 </nav>
 
-{{-- Mobile menu button (positioned below logo) --}}
-<button class="lf-mobile-menu-toggle" id="mobileMenuToggle" title="Toggle menu">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
 
 {{-- ═══════════════════════════════════════
      FLASH MESSAGES
@@ -283,44 +314,25 @@ document.addEventListener('click', e => {
 const mobileMenuToggle = document.getElementById('mobileMenuToggle');
 const mobileMenu = document.getElementById('mobileMenu');
 
-mobileMenuToggle.addEventListener('click', () => {
+mobileMenuToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
   mobileMenuToggle.classList.toggle('active');
   mobileMenu.classList.toggle('open');
 });
 
-// Close mobile menu when a link is clicked
-mobileMenu.querySelectorAll('a, button').forEach(item => {
+// Close mobile menu when a nav link is clicked
+mobileMenu.querySelectorAll('a, button[type="submit"]').forEach(item => {
   item.addEventListener('click', () => {
     mobileMenuToggle.classList.remove('active');
     mobileMenu.classList.remove('open');
   });
 });
 
-function updateMobileMenuVisibility() {
-  if (window.innerWidth > 768) {
-    mobileMenuToggle.style.display = 'none';
-    mobileMenu.style.display = 'none';
-    mobileMenu.classList.remove('open');
-    mobileMenuToggle.classList.remove('active');
-  } else {
-    mobileMenuToggle.style.display = 'flex';
-    if (!mobileMenu.classList.contains('open')) {
-      mobileMenu.style.display = 'none';
-    }
-  }
-}
-
-window.addEventListener('resize', updateMobileMenuVisibility);
-updateMobileMenuVisibility();
-
-// Close mobile menu when clicking outside
+// Close mobile menu when clicking outside the nav
 document.addEventListener('click', e => {
-  if (!e.target.closest('.lf-nav')) {
+  if (!e.target.closest('.lf-nav') && !e.target.closest('.lf-mobile-menu')) {
     mobileMenuToggle.classList.remove('active');
     mobileMenu.classList.remove('open');
-    if (window.innerWidth > 768) {
-      mobileMenu.style.display = 'none';
-    }
   }
 });
 

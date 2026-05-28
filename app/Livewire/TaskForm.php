@@ -3,7 +3,11 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
+/**
+ * Livewire component: TaskForm — create or edit tasks from the UI.
+ */
 class TaskForm extends Component
 {
     public ?int $taskId = null;
@@ -32,7 +36,7 @@ class TaskForm extends Component
 
     public function getCategories()
     {
-        return \App\Models\Category::where('user_id', auth()->id())->get();
+        return \App\Models\Category::where('user_id', Auth::id())->get();
     }
 
     protected function rules(): array
@@ -52,7 +56,7 @@ class TaskForm extends Component
         $this->validate();
 
         $data = [
-            'user_id'     => auth()->id(),
+            'user_id'     => Auth::id(),
             'title'       => $this->title,
             'subtitle'    => $this->subtitle ?: null,
             'description' => $this->description ?: null,
@@ -64,7 +68,7 @@ class TaskForm extends Component
 
         if ($this->taskId) {
             $task = \App\Models\Task::findOrFail($this->taskId);
-            if ($task->user_id !== auth()->id()) {
+            if ($task->user_id !== Auth::id()) {
                 abort(403);
             }
             $task->update($data);

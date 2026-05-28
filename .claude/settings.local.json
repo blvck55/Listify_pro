@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(npm run *)",
-      "Bash(php artisan *)",
-      "Bash(curl -s -c /tmp/cookies.txt -b /tmp/cookies.txt -L http://localhost:8000/dashboard)"
-    ]
-  }
-}

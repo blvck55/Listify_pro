@@ -13,15 +13,19 @@ use Illuminate\Support\Facades\Route;
 | Public routes (throttled heavily to prevent brute-force attacks).
 | Protected routes require a valid Bearer token from /api/login.
 |
+| These routes power the mobile/web API for authentication, tasks, and analytics.
+|
 */
 
 // Public: auth — 10 requests per minute to prevent brute-force
 Route::middleware('throttle:10,1')->group(function () {
-    Route::post('/login',    [AuthApiController::class, 'login']);
-    Route::post('/register', [AuthApiController::class, 'register']);
+    Route::post('/login',                   [AuthApiController::class, 'login']);
+    Route::post('/register',                [AuthApiController::class, 'register']);
+    Route::post('/auth/google',             [AuthApiController::class, 'googleAuth']);
+    Route::post('/two-factor-challenge',    [AuthApiController::class, 'twoFactorChallenge']);
 });
 
-// Protected: all routes below require a valid Sanctum Bearer token
+// Protected: all routes below require a valid Sanctum Bearer token.
 Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
 
     // Auth

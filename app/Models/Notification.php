@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Notification stores user notifications and read state.
+ */
 class Notification extends Model
 {
     use HasFactory;

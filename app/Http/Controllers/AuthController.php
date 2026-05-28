@@ -6,8 +6,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 
+/**
+ * AuthController handles Google OAuth login and callback redirects.
+ */
 class AuthController extends Controller
 {
     /**
@@ -75,7 +79,7 @@ class AuthController extends Controller
 
             return redirect()->intended(route('dashboard'));
         } catch (\Exception $e) {
-            \Log::error('Google callback error: '.$e->getMessage(), ['exception' => $e]);
+            Log::error('Google callback error: '.$e->getMessage(), ['exception' => $e]);
             return redirect('/login')
                 ->with('error', 'Unable to authenticate with Google. '.$e->getMessage())
                 ->withErrors(['google' => 'Unable to authenticate with Google. '.$e->getMessage()]);

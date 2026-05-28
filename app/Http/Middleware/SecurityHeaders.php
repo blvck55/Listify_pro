@@ -32,7 +32,7 @@ class SecurityHeaders
         // Content Security Policy
         // 'unsafe-eval' is required by Alpine.js (bundled in Livewire 3) which uses
         // new Function() for expression evaluation (wire:click, wire:model, etc.)
-        $response->header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net http://127.0.0.1:5174 http://localhost:5174; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com http://127.0.0.1:5174 http://localhost:5174; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; connect-src 'self' http://127.0.0.1:5174 http://localhost:5174 ws://127.0.0.1:5174 ws://localhost:5174; base-uri 'self'; frame-ancestors 'none';");
+        $response->header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; connect-src 'self'; base-uri 'self'; frame-ancestors 'none';");
 
         // Enforce HTTPS
         $response->header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');

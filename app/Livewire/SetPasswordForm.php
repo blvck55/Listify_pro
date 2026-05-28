@@ -5,6 +5,9 @@ namespace App\Livewire;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
+/**
+ * Livewire component: SetPasswordForm — allows users to set or change passwords.
+ */
 class SetPasswordForm extends Component
 {
     public string $password = '';

@@ -4,7 +4,11 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Auth;
 
+/**
+ * Livewire component: AdminUserTable — paginated user table for admins.
+ */
 class AdminUserTable extends Component
 {
     use WithPagination;
@@ -43,7 +47,7 @@ class AdminUserTable extends Component
 
     public function toggleRole(int $id): void
     {
-        if ($id === auth()->id()) {
+        if ($id === Auth::id()) {
             return;
         }
         $user = \App\Models\User::findOrFail($id);
@@ -52,7 +56,7 @@ class AdminUserTable extends Component
 
     public function deleteUser(int $id): void
     {
-        if ($id === auth()->id()) {
+        if ($id === Auth::id()) {
             return;
         }
         \App\Models\User::findOrFail($id)->delete();

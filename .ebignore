@@ -1,0 +1,11 @@
+/vendor
+/node_modules
+/.git
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/logs/*
+*.log
+.env.local
+.env.testing
+listify-v14.zip

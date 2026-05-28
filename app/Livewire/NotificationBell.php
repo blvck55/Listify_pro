@@ -3,14 +3,18 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
+/**
+ * Livewire component: NotificationBell — shows recent notifications and unread count.
+ */
 class NotificationBell extends Component
 {
     public bool $open = false;
 
     public function getNotifications()
     {
-        return auth()->user()
+        return Auth::user()
             ->listifyNotifications()
             ->latest()
             ->take(8)
@@ -19,7 +23,7 @@ class NotificationBell extends Component
 
     public function getUnreadCount()
     {
-        return auth()->user()
+        return Auth::user()
             ->listifyNotifications()
             ->where('is_read', false)
             ->count();
@@ -27,7 +31,7 @@ class NotificationBell extends Component
 
     public function markAllRead()
     {
-        auth()->user()
+        Auth::user()
             ->listifyNotifications()
             ->where('is_read', false)
             ->update(['is_read' => true]);
@@ -35,7 +39,7 @@ class NotificationBell extends Component
 
     public function markRead(int $id)
     {
-        $notif = \App\Models\Notification::where('user_id', auth()->id())
+        $notif = \App\Models\Notification::where('user_id', Auth::id())
             ->findOrFail($id);
         $notif->update(['is_read' => true]);
     }

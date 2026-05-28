@@ -45,6 +45,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
          ->name('tasks.complete');
     Route::get('/task-history',            [TaskController::class, 'history'])
          ->name('tasks.history');
+
+    Route::view('/notes',    'notes.index')->name('notes.index');
+    Route::view('/calendar', 'calendar.index')->name('calendar.index');
 });
 
 // ── ADMIN-ONLY ROUTES ────────────────────────────────────────────────
@@ -80,6 +83,9 @@ Route::middleware(['auth', 'verified', 'admin'])
          ->name('analytics.data');
     Route::get('/activity',            [AdminController::class, 'activity'])
          ->name('activity');
+
+    // GROUPS
+    Route::view('/groups', 'admin.groups')->name('groups');
 
     // SETTINGS
     Route::get('/settings',            [AdminController::class, 'settings'])

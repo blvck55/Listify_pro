@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * TaskHistory records changes made to tasks over time.
+ */
 class TaskHistory extends Model
 {
     use HasFactory;

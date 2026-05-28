@@ -11,7 +11,7 @@
         {{ $taskId ? 'Edit Task' : 'New Task' }}
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem" class="lf-form-grid-2">
 
         {{-- Title --}}
         <div class="lf-form-group" style="grid-column:1/-1">

@@ -10,6 +10,9 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * User is the application user model with authentication and 2FA support.
+ */
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
@@ -64,6 +67,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function listifyNotifications()
     {
         return $this->hasMany(\App\Models\Notification::class, 'user_id');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
+
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class);
     }
 
     public function isAdmin(): bool

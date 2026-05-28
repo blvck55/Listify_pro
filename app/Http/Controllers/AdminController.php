@@ -6,9 +6,11 @@ use App\Models\ActivityLog;
 use App\Models\Notification;
 use App\Models\Task;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * AdminController manages the admin panel and auditing features.
+ */
 class AdminController extends Controller
 {
     /**

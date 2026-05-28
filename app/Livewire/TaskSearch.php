@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
+/**
+ * Livewire component: TaskSearch — filter and search pending tasks for a user.
+ */
 class TaskSearch extends Component
 {
     public string $search = '';

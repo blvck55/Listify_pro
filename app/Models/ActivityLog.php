@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * ActivityLog stores audit trail entries for user and admin actions.
+ */
 class ActivityLog extends Model
 {
     protected $fillable = [

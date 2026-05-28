@@ -7,6 +7,9 @@ use App\Models\TaskHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * TaskController handles task CRUD operations for the web UI.
+ */
 class TaskController extends Controller
 {
     public function index()
